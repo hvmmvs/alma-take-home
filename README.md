@@ -133,6 +133,11 @@ Done! Jane Doe marked as REACHED_OUT.
 | `GET`   | `/api/leads/{id}`     | JWT    | Get a single lead                    |
 | `PATCH` | `/api/leads/{id}`     | JWT    | Update lead state (PENDING → REACHED_OUT) |
 
+## Documentation
+
+- **[DESIGN.md](DESIGN.md)** — Design decisions and rationale for every major architectural choice
+- **[ARCHITECTURE.md](ARCHITECTURE.md)** — System architecture, request lifecycles, data model, and project structure
+
 ## Running Tests
 
 ```bash
