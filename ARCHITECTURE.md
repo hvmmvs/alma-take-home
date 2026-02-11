@@ -110,11 +110,7 @@ Endpoint → Service Layer → Database
 
 ```
 PENDING ──────► REACHED_OUT
-  (only valid transition)
-
-On transition:
-  ├── Email prospect: "An attorney has reached out"
-  └── Email attorney: "Lead marked as reached out"
+  (only valid transition, no other transitions allowed)
 ```
 
 ## Project Structure
@@ -168,21 +164,21 @@ alma/
 | `first_name`| `String`                    | Required                            |
 | `last_name` | `String`                    | Required                            |
 | `email`     | `String`                    | Required, indexed                   |
-| `resume_path`| `String` (nullable)        | Relative path to uploaded file      |
+| `resume_path`| `String`                    | Relative path to uploaded file (required) |
 | `state`     | `Enum(PENDING, REACHED_OUT)`| Default: `PENDING`                  |
 | `created_at`| `DateTime`                  | Server-generated                    |
 | `updated_at`| `DateTime`                  | Auto-updated on change              |
 
 No users table exists. The single internal user's credentials are stored in environment variables.
 
-## Email Notification Points
+## Email Notifications
 
-| Event              | Recipient  | Subject                           |
-|--------------------|------------|-----------------------------------|
-| Lead submitted     | Prospect   | "Thank you for your submission"   |
-| Lead submitted     | Attorney   | "New lead submitted"              |
-| Lead reached out   | Prospect   | "An attorney has reached out"     |
-| Lead reached out   | Attorney   | "Lead marked as reached out"      |
+When a lead is submitted, emails are sent to both the prospect and an attorney:
+
+| Recipient  | Subject                           |
+|------------|-----------------------------------|
+| Prospect   | "Thank you for your submission"   |
+| Attorney   | "New lead submitted"              |
 
 In this implementation, all emails are printed to stdout (via `LoggingEmailService`) rather than sent. The `EmailService` abstract base class defines the interface; swapping to a real provider requires implementing a single method (`send_email`) and updating the `get_email_service()` factory.
 
@@ -192,7 +188,7 @@ Tests use an **in-memory SQLite database** and override the `get_db` dependency 
 
 Coverage includes:
 - **Auth:** successful login, wrong password, wrong username
-- **Public leads:** submission with/without resume, invalid email, disallowed file types
+- **Public leads:** submission with resume, missing resume rejected, invalid email, disallowed file types
 - **Protected leads:** unauthorized access, listing, retrieval, state transition, invalid transition
 - **Email service:** logging output, factory function
 

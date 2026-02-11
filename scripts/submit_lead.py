@@ -53,8 +53,11 @@ def main():
         print("Error: all fields are required.")
         sys.exit(1)
 
-    resume_path = input("Resume file path (leave blank to skip): ").strip() or None
-    if resume_path and not os.path.isfile(resume_path):
+    resume_path = input("Resume file path (.pdf, .doc, .docx): ").strip()
+    if not resume_path:
+        print("Error: resume is required.")
+        sys.exit(1)
+    if not os.path.isfile(resume_path):
         print(f"Error: file not found: {resume_path}")
         sys.exit(1)
 
@@ -81,8 +84,9 @@ def main():
     print(f"  Name:  {data['first_name']} {data['last_name']}")
     print(f"  Email: {data['email']}")
     print(f"  State: {data['state']}")
-    if data.get("resume_path"):
-        print(f"  Resume: {data['resume_path']}")
+    print(f"  Resume: {data['resume_path']}")
+    print(f"\nsent email to prospect: {data['email']}")
+    print("sent email to attorney: attorney@example.com")
 
 
 if __name__ == "__main__":

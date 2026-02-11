@@ -88,8 +88,6 @@ def main():
 
     name = f"{data['first_name']} {data['last_name']}"
     print(f"\nDone! {name} marked as REACHED_OUT.")
-    print(f"sent email to prospect: {data['email']}")
-    print("sent email to attorney: attorney@example.com")
 
 
 if __name__ == "__main__":

@@ -16,7 +16,7 @@ async def submit_lead(
     first_name: str = Form(...),
     last_name: str = Form(...),
     email: EmailStr = Form(...),
-    resume: UploadFile | None = File(None),
+    resume: UploadFile = File(...),
     db: AsyncSession = Depends(get_db),
     email_service: EmailService = Depends(get_email_service),
 ) -> LeadCreateResponse:
@@ -56,7 +56,6 @@ async def patch_lead(
     body: LeadUpdateStateRequest,
     _user: str = Depends(get_current_user),
     db: AsyncSession = Depends(get_db),
-    email_service: EmailService = Depends(get_email_service),
 ) -> LeadDetailResponse:
-    lead = await update_lead_state(db, email_service, lead_id, body.state)
+    lead = await update_lead_state(db, lead_id, body.state)
     return LeadDetailResponse.model_validate(lead)

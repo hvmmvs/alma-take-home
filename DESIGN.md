@@ -42,7 +42,7 @@ Alma needs an internal tool to manage prospective client leads for immigration l
 **Choice:** Business logic lives in `app/services/`, not in the endpoint functions. Endpoints are thin HTTP adapters.
 
 **Why:**
-- **Separation of concerns.** The endpoint layer handles HTTP specifics (status codes, form parsing, dependency injection). The service layer handles domain logic (create lead, validate state transition, send emails). This makes each layer independently testable.
+- **Separation of concerns.** The endpoint layer handles HTTP specifics (status codes, form parsing, dependency injection). The service layer handles domain logic (create lead, dispatch emails on submission, validate state transitions). This makes each layer independently testable.
 - **Reusability.** The same `create_lead()` function could be called from a CLI tool, a background job, or a different API version without duplicating logic.
 - Services receive their dependencies (DB session, email service) as parameters rather than importing globals. This makes them easy to test with mocks and stubs.
 
@@ -51,7 +51,7 @@ Alma needs an internal tool to manage prospective client leads for immigration l
 **Choice:** Abstract `EmailService` base class with a `LoggingEmailService` implementation that prints to stdout instead of sending real emails.
 
 **Why:**
-- The spec says to demonstrate the email integration points without actually sending emails. The Strategy pattern (ABC + concrete implementation) makes this explicit: the interface is defined, the integration points are wired, and swapping to a real email provider (SendGrid, SES) means writing a new class that implements `send_email()` and changing one line in `get_email_service()`.
+- The spec requires that emails be sent to both the prospect and an attorney when a lead is submitted. The Strategy pattern (ABC + concrete implementation) makes this explicit: the interface is defined, the integration point is wired into `create_lead()`, and swapping to a real email provider (SendGrid, SES) means writing a new class that implements `send_email()` and changing one line in `get_email_service()`.
 - Using FastAPI's dependency injection (`Depends(get_email_service)`) means the swap can happen without touching any endpoint or service code.
 - `print()` was chosen over `logging.info()` for the stub output so that it's immediately visible in the terminal during testing, making it obvious to reviewers that the email hook fired.
 

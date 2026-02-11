@@ -14,11 +14,9 @@ async def create_lead(
     first_name: str,
     last_name: str,
     email: str,
-    resume: UploadFile | None = None,
+    resume: UploadFile,
 ) -> Lead:
-    resume_path = None
-    if resume:
-        resume_path = await save_resume(resume)
+    resume_path = await save_resume(resume)
 
     lead = Lead(
         first_name=first_name,
@@ -61,7 +59,7 @@ async def get_lead(db: AsyncSession, lead_id: str) -> Lead:
 
 
 async def update_lead_state(
-    db: AsyncSession, email_service: EmailService, lead_id: str, new_state: LeadState
+    db: AsyncSession, lead_id: str, new_state: LeadState
 ) -> Lead:
     lead = await get_lead(db, lead_id)
 
@@ -74,18 +72,4 @@ async def update_lead_state(
     lead.state = new_state
     await db.flush()
     await db.refresh(lead)
-
-    # Notify prospect
-    await email_service.send_email(
-        to=lead.email,
-        subject="An attorney has reached out",
-        body=f"Hi {lead.first_name}, an attorney has reviewed your case and will be in contact shortly.",
-    )
-    # Notify attorney
-    await email_service.send_email(
-        to=settings.ATTORNEY_EMAILS[0],
-        subject="Lead marked as reached out",
-        body=f"Lead {lead.first_name} {lead.last_name} ({lead.email}) has been marked as REACHED_OUT.",
-    )
-
     return lead

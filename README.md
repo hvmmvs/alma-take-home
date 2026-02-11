@@ -52,7 +52,7 @@ All scripts live in the `scripts/` directory and use only the Python standard li
 python scripts/submit_lead.py
 ```
 
-You'll be prompted for first name, last name, email, and an optional resume file path (`.pdf`, `.doc`, `.docx`):
+You'll be prompted for first name, last name, email, and a resume file path (`.pdf`, `.doc`, `.docx`):
 
 ```
 === Submit a New Lead ===
@@ -60,16 +60,20 @@ You'll be prompted for first name, last name, email, and an optional resume file
 First name: Jane
 Last name: Doe
 Email: jane@example.com
-Resume file path (leave blank to skip):
+Resume file path (.pdf, .doc, .docx): ./resume.pdf
 
 Lead submitted successfully!
   ID:    a1b2c3d4-...
   Name:  Jane Doe
   Email: jane@example.com
   State: PENDING
+  Resume: uploads/a1b2c3d4.pdf
+
+sent email to prospect: jane@example.com
+sent email to attorney: attorney@example.com
 ```
 
-Email notifications (to the prospect and attorneys) are logged to the server console.
+On submission, emails are sent to both the prospect and an attorney. (In this implementation, emails are printed to stdout rather than actually sent.)
 
 ### Log in (required for internal scripts)
 

@@ -12,7 +12,7 @@ class LeadCreateResponse(BaseModel):
     first_name: str
     last_name: str
     email: EmailStr
-    resume_path: str | None = None
+    resume_path: str
     state: LeadState
     created_at: datetime
 
@@ -24,7 +24,7 @@ class LeadDetailResponse(BaseModel):
     first_name: str
     last_name: str
     email: EmailStr
-    resume_path: str | None = None
+    resume_path: str
     state: LeadState
     created_at: datetime
     updated_at: datetime
